@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Núcleo — Estoque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #16302B;
+    --ink-2: #1f4038;
+    --paper: #f5f2ea;
+    --surface: #ffffff;
+    --accent: #c99a3b;
+    --accent-deep: #a87e27;
+    --text: #1a1a17;
+    --muted: #6b6b63;
+    --line: #e4e0d4;
+    --line-soft: #efece3;
+    --danger: #b1442f;
+    --ok: #2f7d4f;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(22,48,43,.06), 0 8px 24px rgba(22,48,43,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  button, input { font-family: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---- top bar ---- */
+  .topbar {
+    background: var(--ink);
+    color: #eef3ef;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .logo { display: inline-flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -.01em; }
+  .logo__mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--ink); display: grid; place-items: center; font-weight: 700; font-size: 16px; }
+  .logo small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #94a89f; margin-top: 1px; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 28px; }
+
+  /* ---- summary cards ---- */
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 26px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .stat__label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+  .stat__value { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -.02em; }
+  .stat__value.accent { color: var(--accent-deep); }
+
+  /* ---- form ---- */
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 22px; }
+  .panel__head { padding: 16px 20px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .panel__head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; }
+  .panel__head .hint { font-size: 12.5px; color: var(--muted); }
+
+  .form { padding: 20px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+  .field label { display: block; font-size: 12.5px; font-weight: 600; color: #2c3c37; margin-bottom: 6px; }
+  .field input { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-size: 14px; color: var(--text); transition: border-color .15s, box-shadow .15s; }
+  .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(201,154,59,.16); background: #fff; }
+
+  .btn { border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 10px 18px; transition: background .15s, transform .05s, border-color .15s; white-space: nowrap; }
+  .btn-primary { background: var(--ink); color: #f3f6f3; }
+  .btn-primary:hover { background: var(--ink-2); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-ghost { background: var(--surface); border: 1px solid var(--line); color: #2c3c37; }
+  .btn-ghost:hover { border-color: var(--accent); background: var(--paper); }
+  .btn-cancel { background: none; border: 1px solid var(--line); color: var(--muted); }
+  .btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ---- table ---- */
+  .table-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .table-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+  .actions { display: flex; gap: 10px; }
+
+  .panel--table { overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 13px 20px; border-bottom: 1px solid var(--line); background: var(--paper); }
+  thead th.num, tbody td.num { text-align: right; }
+  tbody td { padding: 13px 20px; border-bottom: 1px solid var(--line-soft); font-size: 14px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fcfbf7; }
+  .prod-name { font-weight: 600; color: #21332e; }
+  .sku { color: var(--muted); font-size: 12.5px; }
+  .qtd-badge { display: inline-block; min-width: 34px; text-align: center; padding: 3px 8px; border-radius: 20px; font-size: 13px; font-weight: 600; background: #eef3ef; color: var(--ink-2); }
+  .qtd-badge.low { background: #f8e7e2; color: var(--danger); }
+  .row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+  .icon-btn { border: none; background: none; padding: 6px 9px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .icon-btn:hover { background: var(--paper); color: var(--ink-2); }
+  .icon-btn.del:hover { background: #f8e7e2; color: var(--danger); }
+
+  .empty { padding: 50px 20px; text-align: center; color: var(--muted); }
+  .empty .ico { font-size: 30px; display: block; margin-bottom: 12px; }
+  .empty p { font-size: 14px; line-height: 1.5; }
+
+  .note { font-size: 12.5px; color: var(--muted); margin-top: 18px; line-height: 1.55; background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; padding: 12px 14px; }
+  .note strong { color: #2c3c37; }
+
+  @media (max-width: 760px) {
+    .summary { grid-template-columns: 1fr; }
+    .form { grid-template-columns: 1fr 1fr; }
+    .form .field--name, .form .save-cell { grid-column: 1 / -1; }
+    thead th.col-total, tbody td.col-total { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo__mark">N</span>
+      <span>Núcleo<small>Estoque</small></span>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <section class="summary">
+      <div class="stat">
+        <div class="stat__label">Produtos cadastrados</div>
+        <div class="stat__value" id="statCount">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Itens em estoque</div>
+        <div class="stat__value" id="statUnits">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Valor total em estoque</div>
+        <div class="stat__value accent" id="statValue">R$ 0,00</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__head">
+        <h2 id="formTitle">Adicionar produto</h2>
+        <span class="hint">Preencha e pressione Adicionar</span>
+      </div>
+      <div class="form">
+        <div class="field field--name">
+          <label for="nome">Produto</label>
+          <input type="text" id="nome" placeholder="Ex: Parafuso 4mm" />
+        </div>
+        <div class="field">
+          <label for="sku">Código / SKU</label>
+          <input type="text" id="sku" placeholder="Ex: PF-004" />
+        </div>
+        <div class="field">
+          <label for="qtd">Quantidade</label>
+          <input type="number" id="qtd" min="0" step="1" placeholder="0" />
+        </div>
+        <div class="field">
+          <label for="preco">Preço (R$)</label>
+          <input type="number" id="preco" min="0" step="0.01" placeholder="0,00" />
+        </div>
+        <div class="save-cell" style="display:flex; gap:8px;">
+          <button class="btn btn-primary" id="saveBtn">Adicionar</button>
+          <button class="btn btn-cancel" id="cancelBtn" style="display:none;">Cancelar</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="table-head">
+      <h2>Produtos em estoque</h2>
+      <div class="actions">
+        <button class="btn btn-ghost" id="exportBtn">⬇ Exportar pra planilha</button>
+      </div>
+    </div>
+
+    <section class="panel panel--table">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Código</th>
+            <th class="num">Qtd.</th>
+            <th class="num">Preço un.</th>
+            <th class="num col-total">Total</th>
+            <th class="num">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty" id="emptyState">
+        <span class="ico">📦</span>
+        <p>Nenhum produto ainda.<br>Cadastre o primeiro acima pra começar.</p>
+      </div>
+    </section>
+
+    <div class="note">
+      <strong>Onde os dados ficam:</strong> tudo é salvo no navegador deste computador.
+      Para guardar com segurança, use o botão <strong>Exportar pra planilha</strong> de tempos em tempos —
+      o arquivo abre direto no Excel ou no Google Sheets.
+    </div>
+
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'nucleo_estoque_v1';
+    let produtos = [];
+    let editId = null;
+
+    // --- persistência (com proteção caso o navegador bloqueie) ---
+    function carregar() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        produtos = raw ? JSON.parse(raw) : [];
+      } catch (e) { produtos = []; }
+    }
+    function salvar() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos)); }
+      catch (e) { /* navegador sem armazenamento: segue só em memória */ }
+    }
+
+    // --- formatação ---
+    const moeda = v => 'R$ ' + (Number(v) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const inteiro = v => (Number(v) || 0).toLocaleString('pt-BR');
+
+    // --- elementos ---
+    const $ = id => document.getElementById(id);
+    const tbody = $('tbody');
+
+    function render() {
+      tbody.innerHTML = '';
+      $('emptyState').style.display = produtos.length ? 'none' : 'block';
+
+      let totalUnits = 0, totalValue = 0;
+      produtos.forEach(p => {
+        totalUnits += Number(p.qtd) || 0;
+        totalValue += (Number(p.qtd) || 0) * (Number(p.preco) || 0);
+
+        const tr = document.createElement('tr');
+        const low = (Number(p.qtd) || 0) <= 5;
+        tr.innerHTML = `
+          <td><span class="prod-name">${escapeHtml(p.nome)}</span></td>
+          <td><span class="sku">${escapeHtml(p.sku) || '—'}</span></td>
+          <td class="num"><span class="qtd-badge ${low ? 'low' : ''}">${inteiro(p.qtd)}</span></td>
+          <td class="num">${moeda(p.preco)}</td>
+          <td class="num col-total">${moeda((Number(p.qtd)||0) * (Number(p.preco)||0))}</td>
+          <td class="num">
+            <div class="row-actions">
+              <button class="icon-btn" data-edit="${p.id}">Editar</button>
+              <button class="icon-btn del" data-del="${p.id}">Excluir</button>
+            </div>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+
+      $('statCount').textContent = inteiro(produtos.length);
+      $('statUnits').textContent = inteiro(totalUnits);
+      $('statValue').textContent = moeda(totalValue);
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+        ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    // --- adicionar / editar ---
+    function salvarProduto() {
+      const nome = $('nome').value.trim();
+      const sku = $('sku').value.trim();
+      const qtd = $('qtd').value === '' ? 0 : Number($('qtd').value);
+      const preco = $('preco').value === '' ? 0 : Number($('preco').value);
+
+      if (!nome) { $('nome').focus(); return; }
+
+      if (editId) {
+        const p = produtos.find(x => x.id === editId);
+        if (p) { p.nome = nome; p.sku = sku; p.qtd = qtd; p.preco = preco; }
+        sairDaEdicao();
+      } else {
+        produtos.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), nome, sku, qtd, preco });
+      }
+      salvar();
+      render();
+      limparForm();
+      $('nome').focus();
+    }
+
+    function limparForm() {
+      $('nome').value = ''; $('sku').value = ''; $('qtd').value = ''; $('preco').value = '';
+    }
+
+    function entrarNaEdicao(id) {
+      const p = produtos.find(x => x.id === id);
+      if (!p) return;
+      editId = id;
+      $('nome').value = p.nome; $('sku').value = p.sku; $('qtd').value = p.qtd; $('preco').value = p.preco;
+      $('formTitle').textContent = 'Editar produto';
+      $('saveBtn').textContent = 'Salvar alterações';
+      $('cancelBtn').style.display = 'inline-block';
+      $('nome').focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function sairDaEdicao() {
+      editId = null;
+      $('formTitle').textContent = 'Adicionar produto';
+      $('saveBtn').textContent = 'Adicionar';
+      $('cancelBtn').style.display = 'none';
+      limparForm();
+    }
+
+    function excluir(id) {
+      const p = produtos.find(x => x.id === id);
+      if (!p) return;
+      if (confirm(`Excluir "${p.nome}" do estoque?`)) {
+        produtos = produtos.filter(x => x.id !== id);
+        if (editId === id) sairDaEdicao();
+        salvar();
+        render();
+      }
+    }
+
+    // --- exportar CSV (abre no Excel / Google Sheets) ---
+    function exportar() {
+      if (!produtos.length) { alert('Não há produtos para exportar ainda.'); return; }
+      const sep = ';';
+      const cab = ['Produto', 'Código/SKU', 'Quantidade', 'Preço unitário', 'Total'].join(sep);
+      const linhas = produtos.map(p => {
+        const total = (Number(p.qtd)||0) * (Number(p.preco)||0);
+        return [
+          csvCampo(p.nome),
+          csvCampo(p.sku),
+          Number(p.qtd) || 0,
+          (Number(p.preco)||0).toFixed(2).replace('.', ','),
+          total.toFixed(2).replace('.', ',')
+        ].join(sep);
+      });
+      const conteudo = '\uFEFF' + [cab, ...linhas].join('\r\n'); // BOM p/ acentos no Excel
+      const blob = new Blob([conteudo], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const hoje = new Date().toISOString().slice(0,10);
+      a.href = url;
+      a.download = `estoque_${hoje}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    function csvCampo(v) {
+      v = String(v == null ? '' : v);
+      return /[;"\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+    }
+
+    // --- eventos ---
+    $('saveBtn').addEventListener('click', salvarProduto);
+    $('cancelBtn').addEventListener('click', sairDaEdicao);
+    $('exportBtn').addEventListener('click', exportar);
+    ['nome','sku','qtd','preco'].forEach(id =>
+      $(id).addEventListener('keydown', e => { if (e.key === 'Enter') salvarProduto(); }));
+    tbody.addEventListener('click', e => {
+      const ed = e.target.getAttribute('data-edit');
+      const dl = e.target.getAttribute('data-del');
+      if (ed) entrarNaEdicao(ed);
+      if (dl) excluir(dl);
+    });
+
+    // --- iniciar ---
+    carregar();
+    render();
+  </script>
+</body>
+</html>
