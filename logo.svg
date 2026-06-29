@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 40 40" role="img" aria-label="Agro Consultancy">
+  <rect width="40" height="40" rx="11" fill="#c9a23c"/>
+  <path d="M20 32 C 20 27 20 23 20 19" fill="none" stroke="#173d2d" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M20 22 C 15 23 11 19 9 13 C 14 13 18 17 20 22 Z" fill="#173d2d"/>
+  <path d="M20 20 C 25 21 29 17 31 11 C 26 11 22 15 20 20 Z" fill="#1e4f39"/>
+</svg>

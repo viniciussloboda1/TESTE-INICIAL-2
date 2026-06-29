@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="64" viewBox="0 0 280 64" role="img" aria-label="Agro Consultancy">
+  <g transform="translate(8,12)">
+    <rect width="40" height="40" rx="11" fill="#c9a23c"/>
+    <path d="M20 32 C 20 27 20 23 20 19" fill="none" stroke="#173d2d" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M20 22 C 15 23 11 19 9 13 C 14 13 18 17 20 22 Z" fill="#173d2d"/>
+    <path d="M20 20 C 25 21 29 17 31 11 C 26 11 22 15 20 20 Z" fill="#1e4f39"/>
+  </g>
+  <text x="62" y="33" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="22" font-weight="700" letter-spacing="-0.5" fill="#15362a">Agro Consultancy</text>
+  <text x="63" y="49" font-family="Inter, 'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2.4" fill="#6fa52c">CONSULTORIA · AGRO + TECH</text>
+</svg>
