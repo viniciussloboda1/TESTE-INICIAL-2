@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Núcleo — Sistema de Gestão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #16302B;
+    --ink-2: #1f4038;
+    --paper: #f5f2ea;
+    --surface: #ffffff;
+    --accent: #c99a3b;
+    --accent-deep: #a87e27;
+    --text: #1a1a17;
+    --muted: #6b6b63;
+    --line: #e4e0d4;
+    --line-soft: #efece3;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(22,48,43,.06), 0 8px 24px rgba(22,48,43,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .display { font-family: 'Space Grotesk', sans-serif; }
+
+  button { font-family: inherit; cursor: pointer; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .hidden { display: none !important; }
+
+  /* ---------- LOGIN ---------- */
+  .login {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+  }
+
+  .login__brand {
+    background: var(--ink);
+    color: #eef3ef;
+    padding: 56px 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login__brand::after {
+    content: "";
+    position: absolute;
+    right: -120px;
+    bottom: -120px;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(201,154,59,.22), transparent 70%);
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .logo__mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--ink);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 16px;
+  }
+
+  .login__pitch { max-width: 380px; position: relative; z-index: 1; }
+
+  .login__eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+
+  .login__pitch h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 38px;
+    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .login__pitch p { color: #b8c8c0; font-size: 15px; line-height: 1.6; }
+
+  .login__foot { font-size: 12.5px; color: #7f968d; position: relative; z-index: 1; }
+
+  .login__form-side {
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .form-card { width: 100%; max-width: 360px; }
+
+  .form-card h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  .form-card .sub { color: var(--muted); font-size: 14px; margin-bottom: 30px; }
+
+  .field { margin-bottom: 18px; }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    color: #2c3c37;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 14.5px;
+    font-family: inherit;
+    color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+  }
+
+  .field input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(201,154,59,.16);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: var(--ink);
+    color: #f3f6f3;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 6px;
+    transition: background .15s, transform .05s;
+  }
+
+  .btn-primary:hover { background: var(--ink-2); }
+  .btn-primary:active { transform: translateY(1px); }
+
+  .demo-note {
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    padding: 11px 13px;
+    line-height: 1.5;
+  }
+  .demo-note strong { color: #2c3c37; }
+
+  /* ---------- APP / DASHBOARD ---------- */
+  .app { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
+
+  .sidebar {
+    background: var(--ink);
+    color: #d6e2dc;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .sidebar .logo { color: #eef3ef; padding: 0 8px; }
+
+  .nav-group__title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7f968d;
+    padding: 0 10px;
+    margin-bottom: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 10px;
+    border-radius: 7px;
+    font-size: 14px;
+    color: #c2d2cb;
+    text-decoration: none;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    transition: background .12s, color .12s;
+  }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .nav-item.is-active { background: var(--accent); color: var(--ink); font-weight: 600; }
+
+  .nav-item--soon { color: #6f867d; cursor: default; }
+  .nav-item--soon:hover { background: none; color: #6f867d; }
+  .nav-item .tag {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,.08);
+    padding: 2px 7px;
+    border-radius: 20px;
+    color: #94a89f;
+  }
+
+  .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .75; }
+
+  .main { display: flex; flex-direction: column; }
+
+  .topbar {
+    height: 64px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+  }
+
+  .topbar h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .topbar__right { display: flex; align-items: center; gap: 16px; }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 13.5px; color: #2c3c37; font-weight: 500;
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--ink); color: var(--accent);
+    display: grid; place-items: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px;
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: #2c3c37;
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: border-color .12s, background .12s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); background: var(--paper); }
+
+  .canvas { padding: 36px 28px; max-width: 880px; }
+
+  .welcome { margin-bottom: 28px; }
+  .welcome .eyebrow {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent-deep); font-weight: 600; margin-bottom: 8px;
+  }
+  .welcome h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;
+  }
+  .welcome p { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 560px; }
+
+  .empty-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  .empty-card__icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--paper); border: 1px solid var(--line-soft);
+    display: grid; place-items: center; margin: 0 auto 18px;
+    font-size: 24px;
+  }
+  .empty-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px; font-weight: 600; margin-bottom: 8px;
+  }
+  .empty-card p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 420px; margin: 0 auto 22px; }
+
+  .steps {
+    margin-top: 32px;
+    border-top: 1px solid var(--line);
+    padding-top: 26px;
+  }
+  .steps__title {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-bottom: 16px;
+  }
+  .step {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .step:last-child { border-bottom: none; }
+  .step__num {
+    flex: none;
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--ink); color: var(--accent);
+    display: grid; place-items: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px;
+  }
+  .step__body h4 { font-size: 14.5px; font-weight: 600; margin-bottom: 2px; color: #2c3c37; }
+  .step__body p { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px) {
+    .login { grid-template-columns: 1fr; }
+    .login__brand { display: none; }
+    .app { grid-template-columns: 1fr; }
+    .sidebar {
+      flex-direction: row; align-items: center; gap: 14px;
+      padding: 12px 16px; overflow-x: auto;
+    }
+    .nav-group__title, .nav-item .tag { display: none; }
+    .nav-group { display: flex; gap: 6px; }
+    .sidebar .logo { padding: 0; }
+    .canvas { padding: 24px 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ LOGIN ============ -->
+  <div class="login" id="loginView">
+    <aside class="login__brand">
+      <div class="logo">
+        <span class="logo__mark">N</span>
+        <span>Núcleo</span>
+      </div>
+      <div class="login__pitch">
+        <div class="login__eyebrow">Sistema de gestão</div>
+        <h1>Tudo o que o seu negócio precisa, num lugar só.</h1>
+        <p>Estoque, vendas, clientes e finanças — organizados e sob o seu controle, do jeito que a sua operação funciona.</p>
+      </div>
+      <div class="login__foot">© 2026 Núcleo · Versão inicial do projeto</div>
+    </aside>
+
+    <main class="login__form-side">
+      <div class="form-card">
+        <h2>Acessar a conta</h2>
+        <p class="sub">Entre com suas credenciais para continuar.</p>
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="voce@empresa.com.br" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <button class="btn-primary" id="loginBtn">Entrar</button>
+
+        <div class="demo-note">
+          <strong>Versão de demonstração.</strong> O login ainda é só visual — qualquer dado entra.
+          A autenticação de verdade (senha protegida e níveis de acesso) é o próximo passo do projeto.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============ APP ============ -->
+  <div class="app hidden" id="appView">
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo__mark">N</span>
+        <span>Núcleo</span>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group__title">Geral</div>
+        <button class="nav-item is-active"><span class="nav-dot"></span> Início</button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group__title">Módulos</div>
+        <button class="nav-item nav-item--soon"><span class="nav-dot"></span> Estoque <span class="tag">em breve</span></button>
+        <button class="nav-item nav-item--soon"><span class="nav-dot"></span> Vendas <span class="tag">em breve</span></button>
+        <button class="nav-item nav-item--soon"><span class="nav-dot"></span> Clientes <span class="tag">em breve</span></button>
+        <button class="nav-item nav-item--soon"><span class="nav-dot"></span> Financeiro <span class="tag">em breve</span></button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1>Início</h1>
+        <div class="topbar__right">
+          <div class="user-chip">
+            <span class="avatar">VC</span>
+            <span>Você</span>
+          </div>
+          <button class="btn-ghost" id="logoutBtn">Sair</button>
+        </div>
+      </header>
+
+      <div class="canvas">
+        <div class="welcome">
+          <div class="eyebrow">Bem-vindo</div>
+          <h2>Seu sistema está pronto pra crescer.</h2>
+          <p>Esta é a base do projeto. A estrutura está de pé — agora é hora de adicionar o primeiro módulo e dar vida à sua operação.</p>
+        </div>
+
+        <div class="empty-card">
+          <div class="empty-card__icon">📦</div>
+          <h3>Nenhum módulo ativo ainda</h3>
+          <p>Os módulos do menu lateral estão reservados, esperando para serem construídos. Comece pelo que for mais urgente pro seu dia a dia.</p>
+        </div>
+
+        <div class="steps">
+          <div class="steps__title">Próximos passos do projeto</div>
+
+          <div class="step">
+            <span class="step__num">1</span>
+            <div class="step__body">
+              <h4>Subir esta base pro GitHub</h4>
+              <p>Criar o repositório e fazer o primeiro commit — o ponto de partida de tudo.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step__num">2</span>
+            <div class="step__body">
+              <h4>Adicionar o backend e o banco de dados</h4>
+              <p>A camada que guarda os dados de verdade e processa as regras do negócio.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step__num">3</span>
+            <div class="step__body">
+              <h4>Login de verdade</h4>
+              <p>Senha protegida (hash) e níveis de acesso — admin, operador e o que mais precisar.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step__num">4</span>
+            <div class="step__body">
+              <h4>Construir o primeiro módulo</h4>
+              <p>Estoque, vendas, clientes ou financeiro — o que fizer mais sentido começar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginView = document.getElementById('loginView');
+    const appView = document.getElementById('appView');
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      loginView.classList.add('hidden');
+      appView.classList.remove('hidden');
+    });
+
+    // Permite entrar com Enter a partir dos campos
+    ['email', 'senha'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
+      });
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      appView.classList.add('hidden');
+      loginView.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
